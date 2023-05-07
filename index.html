@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datalog Utility</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <!-- Add pako -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
+    <!-- tokml -->
+    <script src="https://cdn.jsdelivr.net/npm/tokml@0.4.0/tokml.js"></script>
+
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- Add Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- Add leaflet-omnivore JavaScript plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js"></script>
+
+
+    <script src="app.js"></script>
+    <style>
+        .form-label { display: inline-block; }
+        .form-control { display: inline-block; width: auto; }
+        .check-btn { display: inline-flex; align-items: center; }
+    </style>
+
+
+
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">TelemLogger-Explorer (Web)</h1>
+
+    <!-- Folder Selection -->
+    <div class="mb-3">
+        <label for="folderInput" class="form-label">Select Folder:</label>
+        <input type="file" class="form-control" id="folderInput" webkitdirectory directory mozdirectory msdirectory odirectory multiple>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mb-3">
+<!--        <button id="unzipFilesBtn" class="btn btn-primary" disabled>Unzip Files</button>-->
+        <button id="refreshDataBtn" class="btn btn-primary" disabled>Refresh Data</button>
+        <button id="exportCsvBtn" class="btn btn-primary" disabled>Export CSV</button>
+        <button id="exportKmlBtn" class="btn btn-primary" disabled>Export KML</button>
+        <button id="showOnMapBtn"  class="btn btn-primary" onclick="showOnMap()" disabled>Show on Map</button>
+        <button id="showGraphs"  class="btn btn-primary" onclick="showGraphs()" disabled>Show Graph Data</button>
+
+    </div>
+
+    <!-- Folder Info -->
+    <div class="mb-3">
+        <div id="folderInfo">No folder selected</div>
+        <div id="fileInfo">
+            <label id="fileInfoLabel">No files found</label>
+        </div>
+
+    </div>
+
+    <!-- Timecode Info -->
+    <div class="mb-3">
+        <div id="tcInfoLabel">No timecode data in dataset</div>
+
+    </div>
+
+    <!-- Timecode Filter -->
+    <div class="mb-3">
+        <label class="form-label me-3">From Timecode:</label>
+        <input id="fromTimeHh" type="number" min="0" max="23" class="form-control me-1" value="0">
+        <input id="fromTimeMm" type="number" min="0" max="59" class="form-control me-1" value="0">
+        <input id="fromTimeSs" type="number" min="0" max="59" class="form-control me-1" value="0">
+        <input id="fromTimeFf" type="number" min="0" max="99" class="form-control me-1" value="0">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label me-3">To Timecode:</label>
+        <input id="toTimeHh" type="number" min="0" max="23" class="form-control me-1" value="0">
+        <input id="toTimeMm" type="number" min="0" max="59" class="form-control me-1" value="0">
+        <input id="toTimeSs" type="number" min="0" max="59" class="form-control me-1" value="0">
+        <input id="toTimeFf" type="number" min="0" max="99" class="form-control me-1" value="0">
+    </div>
+
+    <div id="csv">
+        <!-- CSV Downsample -->
+        <div class="mb-3">
+            <label for="csvDownsample" class="form-label">CSV Downsample:</label>
+            <input type="number" class="form-control" id="csvDownsample" value="0">
+        </div>
+    </div>
+
+    <div id="kml">
+        <!-- KML Downsample -->
+        <div class="mb-3">
+            <label for="kmlDownsample" class="form-label">KML Downsample:</label>
+            <input type="number" class="form-control" id="kmlDownsample" value="30">
+        </div>
+
+    </div>
+    <!-- Filter Keys -->
+    <div class="mb-3">
+        <h4>Filter Keys</h4>
+        <div id="filterKeys"></div>
+    </div>
+
+    <div id="map" style="width: 100%; height: 500px;"></div>
+
+
+
+    <!-- Hook up buttons to functions -->
+    <script>
+        $(document).ready(function() {
+            $("#folderInput").on("change", function(event) {
+                handleFolderSelection(event);
+            });
+            $("#unzipFilesBtn").on("click", function() {
+                unzipFiles();
+            });
+            $("#refreshDataBtn").on("click", function() {
+                refreshData();
+            });
+            $("#exportCsvBtn").on("click", function() {
+                exportCsv();
+            });
+            $("#exportKmlBtn").on("click", function() {
+                exportKml();
+            });
+        });
+
+    </script>
+</div>
+</body>
+</html>
