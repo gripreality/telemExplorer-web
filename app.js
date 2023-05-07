@@ -101,6 +101,7 @@ function refreshData() {
         quickSettingsDiv.insertAdjacentHTML('afterend', '<br>');
 
         document.getElementById('showOnMapBtn').disabled = false;
+        document.getElementById('showGraphs').disabled = false;
     }
 
 }
@@ -429,3 +430,152 @@ function filterData(data, fromTime, toTime) {
     });
     return filteredData;
 }
+
+function showGraphs() {
+    if (!window.combinedJson) {
+        alert('Please select a folder first.');
+        return;
+    }
+
+    // Get the selected timecode range
+    const fromTime = fromTimeString();
+    const toTime = toTimeString();
+
+    // Filter the data based on the selected timecode range
+    const filteredData = filterData(window.combinedJson, fromTime, toTime);
+    const downsample = document.getElementById('csvDownsample').value;
+
+    // Remove the previous charts container if it exists
+    const existingContainer = document.getElementById('charts-container');
+    if (existingContainer) {
+        existingContainer.remove();
+    }
+
+    // Get the CSV downsample value
+    const csvDownsample = document.getElementById('csvDownsample').value;
+
+    // Apply downsampling to filteredData
+    const downsampledData = filteredData.filter((_, index) => index % (parseInt(csvDownsample) + 1) === 0);
+
+    // Define the data groups
+    const dataGroups = [
+        {
+            name: 'Acceleration',
+            variables: ['xValue', 'yValue', 'zValue'],
+            colors: ['#ff6384', '#36a2eb', '#cc65fe']
+        },
+        {
+            name: 'Gyroscope',
+            variables: ['gxValue', 'gyValue', 'gzValue'],
+            colors: ['#4bc0c0', '#9966ff', '#ff9f40']
+        },
+        {
+            name: 'Magnetometer',
+            variables: ['mxValue', 'myValue', 'mzValue'],
+            colors: ['#ffcd56', '#6c5ce7', '#2d3436']
+        },
+        {
+            name: 'Barometer',
+            variables: ['barometerValue'],
+            colors: ['#e17055']
+        },
+        {
+            name: 'Light',
+            variables: ['lightValue'],
+            colors: ['#2ecc71']
+        },
+        {
+            name: 'GPS',
+            variables: ['altitudeValue', 'latitudeValue', 'longitudeValue'],
+            colors: ['#d63031', '#0984e3', '#b2bec3']
+        },
+    ];
+
+    // Create a new container for the charts
+    const chartsContainer = document.createElement('div');
+    chartsContainer.id = 'charts-container';
+    chartsContainer.style.display = 'flex';
+    chartsContainer.style.flexWrap = 'wrap';
+    chartsContainer.style.justifyContent = 'center';
+    document.body.appendChild(chartsContainer);
+
+    // Create a separate chart for each data group
+    dataGroups.forEach(group => {
+        // Create a container for the chart
+        const chartContainer = document.createElement('div');
+        chartContainer.style.width = '50%';
+        chartContainer.style.padding = '10px';
+        chartsContainer.appendChild(chartContainer);
+
+        // Create a canvas element for the chart
+        const canvas = document.createElement('canvas');
+        chartContainer.appendChild(canvas);
+
+        // Create the line chart using Chart.js
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: downsampledData.map((_, index) => index),
+                datasets: group.variables.map((variable, index) => ({
+                    label: variable,
+                    data: downsampledData.map(entry => entry[variable] || 0),
+                    borderColor: group.colors[index],
+                    backgroundColor: group.colors[index] + '33',
+                    fill: false,
+                    tension: 0.4, // Add this line to use smooth lines instead of linear lines
+                })),
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Index',
+                        },
+                    },
+                    y: {
+                        //type: 'logarithmic', // Set the y-axis scale type to logarithmic
+                        type: 'linear', // Set the y-axis scale type to linear
+                        display: true,
+                        title: {
+                            display: true,
+                            text: group.name,
+                        },
+                    },
+                },
+                plugins: {
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'xy',
+                            drag: true,
+                            speed: 10,
+                            threshold: 10,
+                        },
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true,
+                            },
+                            mode: 'xy',
+                            rangeMin: {
+                                x: 0,
+                                y: 0,
+                            },
+                            rangeMax: {
+                                x: null,
+                                y: null,
+                            },
+                            speed: 0.1,
+                        },
+                    },
+                },
+            }
+        });
+    });
+}
+
+
