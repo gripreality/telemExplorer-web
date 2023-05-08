@@ -13,7 +13,6 @@ async function readDlogFiles(files) {
     return results;
 }
 
-
 function refreshData() {
     if (!window.combinedJson) {
         alert('Please select a folder first.');
@@ -434,6 +433,7 @@ function filterData(data, fromTime, toTime) {
     });
     return filteredData;
 }
+
 function checkDownsample(csvDownsample) {
     if (csvDownsample < 30) {
         const message = 'It is not recommended to visualize un-downsampled data as it can crash the application.\n\n' +
@@ -530,6 +530,8 @@ function showGraphs() {
         const canvas = document.createElement('canvas');
         chartContainer.appendChild(canvas);
 
+
+
         // Create the line chart using Chart.js
         new Chart(canvas, {
             type: 'line',
@@ -597,4 +599,17 @@ function showGraphs() {
     });
 }
 
+function movingAverageFilter(data, windowSize) {
+    const filteredData = [];
 
+    for (let i = 0; i < data.length; i++) {
+        const windowStart = Math.max(0, i - windowSize);
+        const windowEnd = Math.min(data.length, i + windowSize);
+        const windowData = data.slice(windowStart, windowEnd);
+        const sum = windowData.reduce((acc, val) => acc + val, 0);
+        const average = sum / windowData.length;
+        filteredData.push(average);
+    }
+
+    return filteredData;
+}
