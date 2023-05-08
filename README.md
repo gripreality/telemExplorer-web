@@ -1,6 +1,6 @@
 # TelemLogger-Explorer (telemExplorer-web)
 
-TelemLogger-Explorer (telemExplorer-web) is a web-based telemetry data visualization and analysis tool. It allows users to visualize telemetry data using interactive maps, filter data, and export data in various formats. The tool is designed to be user-friendly, making it easy for both experts and beginners to work with telemetry data.
+TelemLogger-Explorer (telemExplorer-web) is a web-based telemetry data visualization and analysis tool. It allows users to visualize telemetry data using interactive maps, filter data, and export data in various formats. The tool is designed to be user-friendly, making it easy for both experts and beginners to work with telemetry data. There is a live version running at [TelemLogger.com](https://telemlogger.com/). 
 
 ## Features
 
