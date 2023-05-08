@@ -440,6 +440,7 @@ function checkDownsample(csvDownsample) {
     return true;
 }
 
+
 function showGraphs() {
     if (!window.combinedJson) {
         alert('Please select a folder first.');
