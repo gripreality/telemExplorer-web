@@ -33,7 +33,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fft.js/1.0.0/fft.js"></script>
 
+    <script src="/libs/dsp.js"></script>
 
     <script src="app.js"></script>
     <style>
@@ -109,6 +111,74 @@
         <input id="toTimeFf" type="number" min="0" max="99" class="form-control me-1" value="0">
     </div>
 
+    <div id="filters">
+        <h4>Filters</h4>
+
+        <!-- Accelerometer Filter -->
+        <div class="mb-3">
+            <label for="accFilter" class="form-label">Accelerometer Filter:</label>
+            <select class="form-select" id="accFilter">
+                <option value="none" selected>None</option>
+                <option value="bandpass">Bandpass</option>
+            </select>
+        </div>
+
+        <!-- Gyroscope Filter -->
+        <div class="mb-3">
+            <label for="gyroFilter" class="form-label">Gyroscope Filter:</label>
+            <select class="form-select" id="gyroFilter">
+                <option value="none" selected>None</option>
+                <option value="bandpass">Bandpass</option>
+            </select>
+        </div>
+
+        <!-- Magnetometer Filter -->
+        <div class="mb-3">
+            <label for="magFilter" class="form-label">Magnetometer Filter:</label>
+            <select class="form-select" id="magFilter">
+                <option value="none" selected>None</option>
+                <option value="bandpass">Bandpass</option>
+            </select>
+        </div>
+
+        <!-- Filter parameters -->
+        <div class="mb-3">
+            <label for="lowFreq" class="form-label">Low Frequency (Hz):</label>
+            <input type="number" class="form-control" id="lowFreq" value="0.1">
+        </div>
+
+        <div class="mb-3">
+            <label for="highFreq" class="form-label">High Frequency (Hz):</label>
+            <input type="number" class="form-control" id="highFreq" value="10">
+        </div>
+
+        <div class="mb-3">
+            <label for="sampleRate" class="form-label">Sample Rate (Hz):</label>
+            <select class="form-select" id="sampleRate">
+                <option value="23.97">23.97</option>
+                <option value="24" selected>24</option>
+                <option value="25">25</option>
+                <option value="29.97">29.97</option>
+                <option value="30">30</option>
+                <option value="48">48</option>
+                <option value="50">50</option>
+                <option value="59.97">59.97</option>
+                <option value="60">60</option>
+                <option value="72">72</option>
+                <option value="90">90</option>
+                <option value="120">120</option>
+                <option value="140">140</option>
+                <option value="150">150</option>
+                <option value="200">200</option>
+                <option value="250">250</option>
+            </select>
+        </div>
+
+
+<!--        <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>-->
+    </div>
+
+
     <div id="csv">
         <!-- CSV Downsample -->
         <div class="mb-3">
@@ -174,6 +244,13 @@
             });
         });
 
+        // Check if the current browser is a mobile device
+        var isMobileDevice = /Mobi/i.test(navigator.userAgent);
+
+        // Display an alert if the browser is a mobile device
+        if (isMobileDevice) {
+            alert("This website does not work on mobile devices.");
+        }
 
     </script>
 </div>
