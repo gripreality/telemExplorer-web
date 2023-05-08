@@ -333,6 +333,10 @@ let map; // Move map variable outside of the function to reuse it
 let kmlLayer; // Add a variable to store the existing KML layer
 
 function initLeafletMap() {
+    const mapDiv = document.getElementById('map');
+    mapDiv.style.width = '100%';
+    mapDiv.style.height = '500px';
+
     if (!map) {
         // Initialize the map if it doesn't exist
         map = L.map('map').setView([0, 0], 3);
