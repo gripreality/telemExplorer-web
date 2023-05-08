@@ -430,6 +430,15 @@ function filterData(data, fromTime, toTime) {
     });
     return filteredData;
 }
+function checkDownsample(csvDownsample) {
+    if (csvDownsample < 30) {
+        const message = 'It is not recommended to visualize un-downsampled data as it can crash the application.\n\n' +
+            'Press "OK" to continue with the current downsample value.\n' +
+            'Press "Cancel" and manually set the downsample value to 30 or higher to avoid potential issues.';
+        return confirm(message);
+    }
+    return true;
+}
 
 function showGraphs() {
     if (!window.combinedJson) {
@@ -443,19 +452,24 @@ function showGraphs() {
 
     // Filter the data based on the selected timecode range
     const filteredData = filterData(window.combinedJson, fromTime, toTime);
-    const downsample = document.getElementById('csvDownsample').value;
+
+    // Get the CSV downsample value
+    const csvDownsample = parseInt(document.getElementById('csvDownsample').value);
+
+    // Check the downsample value and confirm with the user if necessary
+    const shouldContinue = checkDownsample(csvDownsample);
+    if (!shouldContinue) {
+        return;
+    }
+
+    // Apply downsampling to filteredData
+    const downsampledData = filteredData.filter((_, index) => index % (csvDownsample + 1) === 0);
 
     // Remove the previous charts container if it exists
     const existingContainer = document.getElementById('charts-container');
     if (existingContainer) {
         existingContainer.remove();
     }
-
-    // Get the CSV downsample value
-    const csvDownsample = document.getElementById('csvDownsample').value;
-
-    // Apply downsampling to filteredData
-    const downsampledData = filteredData.filter((_, index) => index % (parseInt(csvDownsample) + 1) === 0);
 
     // Define the data groups
     const dataGroups = [
